@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useTranslation } from "next-i18next";
+import useTranslation from "hooks/translation";
 import {
   AppBar,
   Toolbar,
@@ -17,7 +17,7 @@ import Link from "components/link";
 import { useRouter } from "next/router";
 import SearchBar from "components/searchBar";
 import LangSelect from "components/langSelect";
-import { GithubOriginalIcon } from "react-devicons";
+import GithubOriginalIcon from "react-devicons/github/original";
 import {
   Brightness7,
   Close,
@@ -25,20 +25,21 @@ import {
   NightsStay,
   Translate,
 } from "@material-ui/icons";
+import { useQuery } from "hooks/query";
+import { useDarkTheme } from "hooks/darkTheme";
 import classes from "./style.module.css";
 
 export default function Navbar({
-  darkTheme,
-  setDarkTheme,
-  query,
-  setQuery,
+  position = "fixed",
+  title,
+  wide = false,
 }: {
-  darkTheme: boolean;
-  setDarkTheme: React.Dispatch<React.SetStateAction<boolean>>;
-  query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
+  position?: "fixed" | "absolute" | "sticky" | "static" | "relative";
+  title?: string;
+  wide?: boolean;
 }) {
-  const { t } = useTranslation("common");
+  const t = useTranslation();
+  const [query, setQuery] = useQuery();
   const [atTop, setAtTop] = useState(false);
   const smallScreen = useMediaQuery("(max-width:800px)");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -46,6 +47,7 @@ export default function Navbar({
   const [langSelectOpen, setLangSelectOpen] = useState(false);
   const router = useRouter();
   const isHome = router.route === "/";
+  const [darkTheme, setDarkTheme] = useDarkTheme();
 
   const menu = [
     {
@@ -79,17 +81,22 @@ export default function Navbar({
           ? classes.root
           : `${classes.root} ${classes.scrolled}`
       }
-      position="fixed"
+      position={position}
     >
       <JumboThemeProvider>
-        <Toolbar className={`${classes.toolbar} container`}>
+        <Toolbar
+          className={`${classes.toolbar} ${wide ? classes.wide : "container"}`}
+        >
           <Link href="/" style={{ color: "white" }}>
             <Typography variant="h6" className={classes.title}>
               <img src="/logo_t.svg" alt="The Algorithms logo" />
-              TheAlgorithms
+              <div className={classes.titleBox}>
+                <div className={classes.bigTitle}>The Algorithms</div>
+                <div className={classes.smallTitle}>{title}</div>
+              </div>
             </Typography>
           </Link>
-          {!isHome && !smallScreen && (
+          {!(isHome && atTop) && !smallScreen && (
             <SearchBar query={query} setQuery={setQuery} small />
           )}
           {smallScreen ? (
@@ -105,15 +112,21 @@ export default function Navbar({
               <IconButton
                 ref={langSelectRef}
                 onClick={() => setLangSelectOpen(true)}
+                aria-label="Select Language"
               >
                 <Translate />
               </IconButton>
-              <IconButton onClick={switchTheme}>
+              <IconButton
+                onClick={() => switchTheme()}
+                aria-label="Switch to dark Theme"
+              >
                 {darkTheme ? <Brightness7 /> : <NightsStay />}
               </IconButton>
               <IconButton
                 href="https://github.com/TheAlgorithms"
                 target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
               >
                 <GithubOriginalIcon color="white" />
               </IconButton>
@@ -145,7 +158,7 @@ export default function Navbar({
           <NextLink href="https://github.com/TheAlgorithms">
             <MenuItem>GitHub</MenuItem>
           </NextLink>
-          <MenuItem onClick={switchTheme}>
+          <MenuItem onClick={() => switchTheme()}>
             {darkTheme ? t("lightModeNavbar") : t("darkModeNavbar")}
           </MenuItem>
           <MenuItem onClick={() => setLangSelectOpen(true)}>

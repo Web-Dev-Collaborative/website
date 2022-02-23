@@ -2,52 +2,44 @@ import { Tooltip, Typography, useMediaQuery } from "@material-ui/core";
 import { Implementation } from "lib/models";
 import { Language, getLanguageName } from "lib/repositories";
 import LanguageIcon from "components/icon";
-import LanguagesList from "../languagesList";
+import Translation from "components/translation";
+import useTranslation from "hooks/translation";
 import classes from "./style.module.css";
-import { useTranslation } from "next-i18next";
 
 export default function Implementations({
   implementations,
-  large = false,
-  className,
 }: {
   implementations: { [key in Language]?: Implementation };
-  large?: boolean;
-  className?: string;
 }) {
   const smallWidth = useMediaQuery(
-    "(max-width: 1200px) and (min-width: 700px)"
+    "((max-width: 1200px) and (min-width: 700px)) or (max-width: 400px)"
   );
   const numIcons = smallWidth ? 4 : 6;
-  const { t } = useTranslation("common");
+  const t = useTranslation();
 
-  return large ? (
-    <LanguagesList
-      languages={Object.keys(implementations).map((langName: Language) => ({
-        name: langName,
-        href: implementations[langName].url,
-      }))}
-      className={className || ""}
-    />
-  ) : (
+  return (
     <div className={classes.rootSmall}>
       {Object.keys(implementations)
         .slice(0, numIcons)
         .map((language: Language) => (
-          <a
-            key={language}
-            href={implementations[language].url}
-            className={classes.icon}
-          >
+          <div key={language} className={classes.icon}>
             <LanguageIcon
               language={language}
-              tooltip={`${getLanguageName(language)} Implementation`}
+              tooltip={
+                <Translation
+                  name="langImplementation"
+                  variables={{ language: getLanguageName(language) }}
+                />
+              }
             />
-          </a>
+          </div>
         ))}
       {Object.keys(implementations).length > numIcons && (
         <Tooltip
-          title={t("languages_count").replace("{}", (Object.keys(implementations).length - numIcons).toString())}
+          title={t("languages_count").replace(
+            "{}",
+            (Object.keys(implementations).length - numIcons).toString()
+          )}
         >
           <Typography color="textSecondary" className={classes.more}>
             +{Object.keys(implementations).length - numIcons}

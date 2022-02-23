@@ -17,7 +17,7 @@ export const Repositories = {
   java: {
     name: "Java",
     allowedFiles: [".java"],
-    baseDir: ".",
+    baseDir: "src/main/java/com/thealgorithms",
   },
   "c-sharp": {
     name: "C#",
@@ -111,6 +111,16 @@ export const Repositories = {
     name: "MATLAB Octave",
     allowedFiles: [".m"],
     baseDir: "algorithms",
+  },
+  julia: {
+    name: "Julia",
+    allowedFiles: [".jl"],
+    baseDir: "src",
+  },
+  lua: {
+    name: "Lua",
+    allowedFiles: [".lua"],
+    baseDir: "src",
   },
 };
 

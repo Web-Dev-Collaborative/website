@@ -1,8 +1,8 @@
 <p align="center">
   <a href="https://the-algorithms.com">
-    <img src="./public/logo_t.svg" height="100">
+    <img src="https://user-images.githubusercontent.com/73777108/150716450-24845b69-48c1-4d7b-a641-cf2f853c2b53.gif" height="100">
   </a>
-  <h1 align="center"><a href="https://github.com/TheAlgorithms/">The Algorithms</a> official website</h1>
+  <h1 align="center"><a href="https://github.com/TheAlgorithms/">The Algorithms</a> Official Website</h1>
 </p>
 
 <p align="center">
@@ -20,7 +20,7 @@
   </a>
 
   <a href="https://discord.gg/c7MnfGFGa6">
-    <img src="https://img.shields.io/discord/808045925556682782.svg?logo=discord&colorB=7289DA" height="20">
+    <img src="https://img.shields.io/discord/808045925556682782.svg?logo=discord&colorB=5865F2" height="20">
   </a>
 
   <br />
@@ -40,7 +40,7 @@
   </a>
 </p>
 
-This is a static [Next.js](https://nextjs.org/) site providing a searchable library of all the algorithms in [The Algorithms](https://github.com/TheAlgorithms). All the data about the algorithms get fetched from the `DIRECTORY.md` files in all the different repositories.
+This is a static [Next.js](https://nextjs.org/) site providing a searchable library of all the algorithms in [The Algorithms](https://github.com/TheAlgorithms). All the data about the algorithms gets scraped directly from the git repositories.
 
 ## Translating the website
 
@@ -70,21 +70,20 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the website.
 
+Alternatively, you can also use the [Ready-to-Code Gitpod](https://gitpod.io/#https://github.com/TheAlgorithms/website) and easily check how your deployment looks. It will automatically run the commands mentioned above on run.
+
 ## Contributing
 
-If you want to add a new feature or fix a bug, create a new branch or fork and commit there. Before opening a PR be sure to
+If you want to add a new feature or fix a bug, create a new branch or fork and commit there. Before opening a PR, be sure to
 
 - Run `yarn lint` and fix potential errors
 - Run `yarn build` to check if everything still builds successfully
 
-Open the pull request against `main`. Vercel will automatically create a preview deployment and the pull request will be squash merged after being reviewed by a member.
-
-If you are a member and just want to add a small fix you can also directly commit to `main` instead of opening a pull request.
+Open the pull request against `main`. Vercel will automatically create a preview deployment, and the pull request will be squash merged after being reviewed by a member.
 
 ## License
 
-The website itself (this repository) is licensed under [MIT](https://github.com/TheAlgorithms/website/blob/main/LICENSE),\
-while all the licenses for the code on the website can be found in the respective repositories.
+The source code of website itself (this repository) is licensed under [MIT](https://github.com/TheAlgorithms/website/blob/main/LICENSE), while all the licenses for the code and explanations on the website can be found in the respective repositories.
 
 ## Learn More
 

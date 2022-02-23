@@ -5,3 +5,5 @@ node_modules
 cache
 out
 /tmp
+/public/data
+tsconfig.tsbuildinfo

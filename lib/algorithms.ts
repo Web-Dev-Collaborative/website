@@ -2,33 +2,45 @@ import fs from "fs";
 import path from "path";
 import locales from "lib/locales";
 import type { Algorithm } from "./models";
+import { DATA_DIR } from "./constants";
 
-export function getAlgorithmSlugs() {
-  return fs.readdirSync("tmp/algorithms").flatMap((file) =>
-    locales.map((locale) => ({
-      params: {
-        algorithm: file.replace(".json", ""),
-      },
-      locale,
-    }))
+export async function getAlgorithmSlugs() {
+  return (await fs.promises.readdir(path.join(DATA_DIR, "algorithms"))).flatMap(
+    (file) =>
+      locales.map((locale) => ({
+        params: {
+          algorithm: file.replace(".json", ""),
+        },
+        locale: locale.code,
+      }))
   );
 }
 
-export function getAlgorithm(slug: string) {
+export async function getAlgorithm(slug: string, minimal = false) {
   const algorithm: Algorithm = JSON.parse(
-    fs.readFileSync(path.join("tmp", "algorithms", `${slug}.json`)).toString()
+    (
+      await fs.promises.readFile(
+        path.join(
+          DATA_DIR,
+          minimal ? "algorithms-min" : "algorithms",
+          `${slug}.json`
+        )
+      )
+    ).toString()
   );
   return algorithm;
 }
 
-export function getAllAlgorithms() {
-  const algorithms: Algorithm[] = [];
-  fs.readdirSync("tmp/algorithms").forEach((file) => {
-    algorithms.push(
+export async function getAllAlgorithms() {
+  return (await Promise.all(
+    (
+      await fs.promises.readdir(path.join(DATA_DIR, "algorithms-min"))
+    ).map(async (file) =>
       JSON.parse(
-        fs.readFileSync(path.join("tmp", "algorithms", file)).toString()
+        (
+          await fs.promises.readFile(path.join(DATA_DIR, "algorithms", file))
+        ).toString()
       )
-    );
-  });
-  return algorithms;
+    )
+  )) as Algorithm[];
 }

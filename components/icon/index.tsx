@@ -7,7 +7,7 @@ import classes from "./style.module.css";
 function icon(name: string, version: string) {
   return (
     <img
-      src={`https://gitcdn.link/repo/devicons/devicon/master/icons/${name}/${name}-${version}.svg`}
+      src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}/${name}-${version}.svg`}
       alt={name}
     />
   );
@@ -19,13 +19,13 @@ export default function LanguageIcon({
   className = "",
   color = "inherit",
 }: {
-  language: Language;
-  tooltip?: string;
+  language: Language | string;
+  tooltip?: string | JSX.Element;
   className?: string;
   color?: string;
 }) {
   const theme: Theme = useTheme();
-  const colored = theme.palette.type !== "dark";
+  const colored = theme?.palette.type !== "dark";
 
   return (
     <Tooltip className={className} title={tooltip || ""}>
@@ -67,7 +67,10 @@ export default function LanguageIcon({
             case "scala":
               return icon("scala", colored ? "original" : "plain");
             case "jupyter":
-              return icon("jupyter", colored ? "original" : "plain");
+              return icon(
+                "jupyter",
+                colored ? "original-wordmark" : "plain-wordmark"
+              );
             case "haskell":
               return icon("haskell", colored ? "original" : "plain");
             case "ocaml":
@@ -78,6 +81,10 @@ export default function LanguageIcon({
               return icon("elm", colored ? "original" : "plain");
             case "matlab-octave":
               return icon("matlab", colored ? "original" : "plain");
+            case "julia":
+              return icon("julia", colored ? "original" : "plain");
+            case "lua":
+              return icon("lua", colored ? "original" : "plain");
             default:
               throw new Error(`Missing icon for ${language}`);
           }

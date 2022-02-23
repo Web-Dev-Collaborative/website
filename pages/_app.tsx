@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import "../styles/globals.css";
 import "styles/notebook.css";
-import { useRouter } from "next/router";
 import NextNprogress from "nextjs-progressbar";
 import { AppProps } from "next/app";
 import { lightTheme, darkTheme } from "hooks/themes";
-import Jumbo from "components/jumbo";
-import Navbar from "components/navbar";
-import Footer from "components/footer";
 import Head from "components/head";
 import { appWithTranslation } from "next-i18next";
+import PlausibleScript from "components/plausible";
+import { QueryProvider } from "hooks/query";
+import { DarkThemeProvider } from "hooks/darkTheme";
+import DefaultLayout from "layouts/default";
+import { NextQueryParamProvider } from "next-query-params";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-  const [query, setQuery] = useState((router.query.q as string) || "");
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
   React.useEffect(() => {
@@ -25,35 +24,31 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, []);
 
-  useEffect(() => {
-    setIsDarkTheme(
-      localStorage.getItem("theme")
-        ? localStorage.getItem("theme") === "dark"
-        : window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
-  }, []);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const Layout = (Component as any).Layout || DefaultLayout;
 
   return (
-    <div style={{ height: "100%" }} className={isDarkTheme ? "dark" : ""}>
-      <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
-        <Head />
-        <CssBaseline />
-        <NextNprogress
-          color="#fff"
-          height={2}
-          options={{ showSpinner: false }}
-        />
-        <Navbar
-          darkTheme={isDarkTheme}
-          setDarkTheme={setIsDarkTheme}
-          query={query}
-          setQuery={setQuery}
-        />
-        {router.route === "/" && <Jumbo query={query} setQuery={setQuery} />}
-        <Component {...pageProps} />
-        <Footer />
-      </ThemeProvider>
-    </div>
+    <>
+      <DarkThemeProvider value={[isDarkTheme, setIsDarkTheme]}>
+        <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
+          <QueryProvider>
+            <NextQueryParamProvider>
+              <Head />
+              <CssBaseline />
+              <PlausibleScript />
+              <NextNprogress
+                color="#fff"
+                height={2}
+                options={{ showSpinner: false }}
+              />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </NextQueryParamProvider>
+          </QueryProvider>
+        </ThemeProvider>
+      </DarkThemeProvider>
+    </>
   );
 }
 

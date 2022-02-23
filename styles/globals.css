@@ -6,23 +6,33 @@ body,
   margin: 0;
   height: 100%;
   width: 100%;
+  min-width: 350px;
 }
 
 body {
   margin-top: 64px !important;
   height: calc(100% - 64px);
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: 1rem;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+@media (max-width: 600px) {
+  body {
+    margin-top: 56px !important;
+    height: calc(100% - 56px);
+  }
+}
+
+#__next {
+  transition: background 0.4s ease;
 }
 
 *,
 *::after,
 *::before {
   box-sizing: border-box;
-}
-
-body {
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-  font-size: 1rem;
-  margin: 0;
 }
 
 .section {
@@ -48,6 +58,7 @@ body {
 .nb-output {
   background-color: rgba(0, 0, 0, 0.03) !important;
   padding: 0.5em;
+  display: block;
 }
 
 .dark .hljs,
@@ -74,4 +85,20 @@ td {
 
 table {
   border-spacing: 0 !important;
+}
+
+.MuiDialog-container {
+  padding-top: 64px !important;
+}
+
+.elevateOnHover {
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.2s ease;
+}
+
+.elevateOnHover:hover {
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.05),
+    0 1px 1px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.05),
+    0 0.5rem 1rem rgba(0, 0, 0, 0.13);
 }

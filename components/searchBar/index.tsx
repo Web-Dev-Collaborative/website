@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useRef } from "react";
-import { useTranslation } from "next-i18next";
+import useTranslation from "hooks/translation";
 import {
   FormControl,
   FilledInput,
@@ -28,10 +28,10 @@ export default function SearchBar({
   setQuery,
   className = "",
 }) {
-  const { t } = useTranslation("common");
+  const t = useTranslation();
   const router = useRouter();
   const smallScreen = useMediaQuery("(max-width: 800px)");
-  const inputRef = useRef<HTMLDivElement>();
+  const inputRef = useRef<HTMLInputElement>();
 
   function handleInput(event: FormEvent) {
     setQuery((event.target as HTMLInputElement).value);
@@ -43,12 +43,17 @@ export default function SearchBar({
 
   function handleSubmit(event?: FormEvent) {
     if (event) event.preventDefault();
-    router.push(`/search?q=${query}`);
+    // For performance reasons the input on small screens is not controlled
+    router.push(`/search?q=${smallScreen ? inputRef.current.value : query}`);
   }
 
   const searchAdornment = (
     <InputAdornment position="end">
-      <IconButton style={{ marginRight: -12 }} onClick={() => handleSubmit()}>
+      <IconButton
+        style={{ marginRight: -12 }}
+        onClick={() => handleSubmit()}
+        aria-label="Search"
+      >
         <Search />
       </IconButton>
     </InputAdornment>
@@ -56,7 +61,7 @@ export default function SearchBar({
 
   useEffect(() => {
     if (router.route.startsWith("/search")) {
-      inputRef.current.getElementsByTagName("input")[0].focus();
+      inputRef.current.focus();
     }
   }, [router.route]);
 
@@ -66,37 +71,57 @@ export default function SearchBar({
       autoComplete="off"
       onSubmit={handleSubmit}
       className={className}
+      action="/search"
+      method="GET"
     >
-      {/* <TextField
-        variant={small ? "outlined" : "filled"}
-        size={small ? "small" : "medium"}
-        style={{ width: "100%" }}
-        label={!small ? "Search any algorithm" : ""}
-        placeholder={small ? "Search any algorithm" : ""}
-        onInput={handleInput}
-        value={query}
-        id="searchBar"
-      ></TextField> */}
-
+      {/* ESLint is broken here */}
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label htmlFor="search" style={{ display: "none" }}>
+        {t("searchText")}
+      </label>
       {small ? (
         <FormControl variant="outlined" size="small">
-          <OutlinedInput
-            onInput={handleInput}
-            value={query}
-            placeholder={t("searchText")}
-            endAdornment={searchAdornment}
-            ref={inputRef}
-          />
+          {smallScreen ? (
+            <OutlinedInput
+              id="search"
+              name="q"
+              placeholder={t("searchText")}
+              endAdornment={searchAdornment}
+              inputRef={inputRef}
+            />
+          ) : (
+            <OutlinedInput
+              id="search"
+              name="q"
+              onInput={(event: FormEvent) => handleInput(event)}
+              value={query}
+              placeholder={t("searchText")}
+              endAdornment={searchAdornment}
+              inputRef={inputRef}
+            />
+          )}
         </FormControl>
       ) : (
         <FormControl variant="filled" style={{ width: "100%" }} size="medium">
           <>
             <InputLabel>{t("searchText")}</InputLabel>
-            <FilledInput
-              onInput={handleInput}
-              endAdornment={searchAdornment}
-              value={query}
-            />
+            {smallScreen ? (
+              <FilledInput
+                id="search"
+                name="q"
+                endAdornment={searchAdornment}
+                inputRef={inputRef}
+              />
+            ) : (
+              <FilledInput
+                id="search"
+                name="q"
+                onInput={(event: FormEvent) => handleInput(event)}
+                value={query}
+                endAdornment={searchAdornment}
+                inputRef={inputRef}
+              />
+            )}
           </>
         </FormControl>
       )}

@@ -5,19 +5,22 @@ import {
   CardActions,
   Button,
   Breadcrumbs,
+  Tooltip,
 } from "@material-ui/core";
 import React from "react";
 import Implementations from "components/implementations";
 import { normalize } from "lib/normalize";
+import NextLink from "next/link";
 import Link from "components/link";
 import { Algorithm } from "lib/models";
-import { useTranslation } from "next-i18next";
+import useTranslation from "hooks/translation";
 import classes from "./style.module.css";
 
 export default function AlgorithmCard({ algorithm }: { algorithm: Algorithm }) {
-  const { t } = useTranslation("common");
+  const t = useTranslation();
+
   return (
-    <Card className={classes.root}>
+    <Card className="elevateOnHover">
       <CardContent>
         <Breadcrumbs>
           {algorithm.categories.map((category) => (
@@ -26,19 +29,31 @@ export default function AlgorithmCard({ algorithm }: { algorithm: Algorithm }) {
               className={classes.category}
               key={category}
             >
-              <Link href={`/category/${normalize(category)}`}>{category}</Link>
+              <Link href={`/category/${normalize(category)}`}>
+                {t(`categories:${category}`)}
+              </Link>
             </Typography>
           ))}
         </Breadcrumbs>
-        <Typography variant="h5" component="h2" className={classes.title}>
-          {algorithm.name}
-        </Typography>
+        {algorithm.name.length > 26 ? (
+          <Tooltip title={algorithm.name}>
+            <Typography variant="h5" component="h2" className={classes.title}>
+              {algorithm.name}
+            </Typography>
+          </Tooltip>
+        ) : (
+          <Typography variant="h5" component="h2" className={classes.title}>
+            {algorithm.name}
+          </Typography>
+        )}
       </CardContent>
       <CardActions className={classes.actions}>
         <Implementations implementations={algorithm.implementations} />
-        <Link href={`/algorithm/${algorithm.slug}`}>
-          <Button color="primary">{t("moreAlgorithmCard")}</Button>
-        </Link>
+        <NextLink href={`/algorithm/${algorithm.slug}`} passHref>
+          <Button color="primary" aria-label={`View ${algorithm.name}`}>
+            {t("moreAlgorithmCard")}
+          </Button>
+        </NextLink>
       </CardActions>
     </Card>
   );

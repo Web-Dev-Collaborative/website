@@ -9,6 +9,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import LanguageIcon from "components/icon";
 import { OpenInNew } from "@material-ui/icons";
 import { GetStaticPaths, GetStaticProps } from "next";
+import useTranslation from "hooks/translation";
 import classes from "./style.module.css";
 
 export default function LanguagePage({
@@ -16,9 +17,15 @@ export default function LanguagePage({
 }: {
   language: { name: Language; algorithms: Algorithm[] };
 }) {
+  const t = useTranslation();
+
   return (
     <>
-      <Head title={getLanguageName(language.name)} />
+      <Head
+        title={getLanguageName(language.name)}
+        description={t("languageMetaDescription", { language: language.name })}
+        tags={[language.name]}
+      />
       <Section>
         <div className={classes.titleContainer}>
           <Typography variant="h4">
@@ -30,16 +37,19 @@ export default function LanguagePage({
               startIcon={<OpenInNew />}
               href={`https://github.com/TheAlgorithms/${language.name}`}
             >
-              Github Repo
+              {t("githubRepository")}
             </Button>
-            {["c", "c-plus-plus"].includes(language.name.toLowerCase()) && (
+            {["c", "c-plus-plus", "julia"].includes(
+              language.name.toLowerCase()
+            ) && (
               <Button
                 startIcon={<OpenInNew />}
                 href={`https://thealgorithms.github.io/${language.name
                   .replace(/^c$/, "C")
-                  .replace(/^c-plus-plus$/, "C-Plus-Plus")}`}
+                  .replace(/^c-plus-plus$/, "C-Plus-Plus")
+                  .replace(/^julia$/, "Julia/dev")}`}
               >
-                Documentation
+                {t("documentationLanguage")}
               </Button>
             )}
           </div>
@@ -53,7 +63,7 @@ export default function LanguagePage({
 export const getStaticProps: GetStaticProps = async ({ params, locale }) => ({
   props: {
     language: await getLanguage(params.language.toString()),
-    ...(await serverSideTranslations(locale, ["common"])),
+    ...(await serverSideTranslations(locale, ["common", "categories"])),
   },
 });
 
